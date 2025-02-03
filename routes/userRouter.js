@@ -1,0 +1,15 @@
+const express = require('express');
+const router = express.Router();
+const authController = require('../controllers/authController');
+const userController = require('../controllers/userController');
+const { protect, restrictTo } = require('../middlewares/authmiddlewares');
+const { verifyOtp } = require('../utilities/otpUtilities');
+
+router.post('/signup', authController.signUp);
+router.post('/signin', authController.signIn);
+router.post('/verifyotp', protect, verifyOtp); // Fixed middleware reference
+router.post('/logout', authController.logout);
+router.post('/refresh-token', authController.refreshToken);
+router.get('/users', protect, restrictTo, userController.getUsers);
+
+module.exports = router;
