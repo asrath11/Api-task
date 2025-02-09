@@ -1,4 +1,5 @@
 const { totp } = require('otplib');
+const Otp = require('../models/otpModel');
 const env = require('dotenv');
 env.config({
   path: 'config.env',
