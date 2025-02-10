@@ -10,6 +10,8 @@ router.post('/signin', authController.signIn);
 router.post('/verifyotp', protect, verifyOtp); // Fixed middleware reference
 router.post('/logout', authController.logout);
 router.post('/refresh-token', authController.refreshToken);
+
+router.get('/user/:id', userController.getUser);
 router.get('/users', protect, restrictTo, userController.getUsers);
 
 module.exports = router;

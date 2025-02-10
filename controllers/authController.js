@@ -8,6 +8,8 @@ const sendEmail = require('../utilities/sendEmail');
 exports.signUp = async function (req, res) {
   try {
     let { email, password } = req.body;
+    let user_type = req.body.user_type || 1;
+    console.log(user_type);
 
     if (!email || !password) {
       return res.status(400).json({
@@ -25,7 +27,7 @@ exports.signUp = async function (req, res) {
       });
     }
 
-    const user = await User.create({ email, password });
+    const user = await User.create({ email, password, user_type });
 
     // Handle token creation securely and include refreshToken
     const { accessToken, refreshToken } = await createToken(user, res); // Ensure res is passed here
