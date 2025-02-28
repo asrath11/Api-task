@@ -1,16 +1,22 @@
 const State = require('../models/stateModel');
-exports.getStates = async (req, res) => {
+
+// Get all states
+exports.getStates = async (_req, res) => {
   try {
     const states = await State.find();
-    if (!states) {
-      res.status(200).json({
-        message: 'At the movement,There is no State',
-      });
+
+    if (states.length === 0) {
       return res.status(200).json({
         status: 'Success',
-        states,
+        message: 'At the moment, there are no states.',
       });
     }
+
+    return res.status(200).json({
+      status: 'Success',
+      results: states.length,
+      states,
+    });
   } catch (error) {
     return res.status(400).json({
       status: 'Failed',
@@ -19,3 +25,94 @@ exports.getStates = async (req, res) => {
   }
 };
 
+// Get a single state by ID
+exports.getState = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({
+        status: 'Failed',
+        message: 'Please provide a valid state ID.',
+      });
+    }
+
+    const state = await State.findById(id);
+
+    if (!state) {
+      return res.status(404).json({
+        status: 'Failed',
+        message: 'State not found.',
+      });
+    }
+
+    return res.status(200).json({
+      status: 'Success',
+      state,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      status: 'Failed',
+      message: error.message,
+    });
+  }
+};
+
+// Create a new state
+exports.createState = async (req, res) => {
+  try {
+    const { name } = req.body;
+
+    if (!name) {
+      return res.status(400).json({
+        status: 'Failed',
+        message: 'Please provide the name of the state.',
+      });
+    }
+
+    const state = await State.create({ name });
+
+    return res.status(201).json({
+      status: 'Success',
+      state,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      status: 'Failed',
+      message: error.message,
+    });
+  }
+};
+
+// Delete a state by ID
+exports.deleteState = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({
+        status: 'Failed',
+        message: 'Please provide a valid state ID.',
+      });
+    }
+
+    const state = await State.findByIdAndDelete(id);
+
+    if (!state) {
+      return res.status(404).json({
+        status: 'Failed',
+        message: 'State not found.',
+      });
+    }
+
+    return res.status(200).json({
+      status: 'Success',
+      message: 'State deleted successfully.',
+    });
+  } catch (error) {
+    return res.status(400).json({
+      status: 'Failed',
+      message: error.message,
+    });
+  }
+};

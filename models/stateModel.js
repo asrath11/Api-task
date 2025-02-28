@@ -4,6 +4,7 @@ const StateSchema = new Schema({
   name: {
     type: String,
     required: [true, 'Please provide a name for the state'],
+    unique: 'true',
   },
 });
 const state = mongoose.model('State', StateSchema);

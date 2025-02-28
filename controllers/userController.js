@@ -1,8 +1,8 @@
 // User Controller
 const User = require('./../models/userModel');
-exports.getUsers = async (req, res) => {
+exports.getUsers = async (_req, res) => {
   const users = await User.find();
-  if (!users) {
+  if (users.length === 0) {
     return res
       .status(400)
       .json({ status: 'Failed', message: 'There are no Users' });
