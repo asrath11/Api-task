@@ -14,6 +14,7 @@ env.config({ path: './config.env' });
 const swaggerDocs = require('./swagger/swaggerDocs'); // Ensure correct import
 const userRouter = require('./routes/userRouter');
 const stateRouter = require('./routes/stateRouter');
+const cityRouter = require('./routes/cityRouter');
 
 // Connect to Database
 connectDb();
@@ -33,6 +34,7 @@ app.use(morgan('dev')); // Log HTTP requests
 // API Routes
 app.use('/api/v1', userRouter);
 app.use('/api/v1/states', stateRouter);
+app.use('/api/v1/cities', cityRouter);
 
 // Initialize Swagger
 swaggerDocs(app);
