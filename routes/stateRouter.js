@@ -1,8 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const stateController = require('../controllers/stateController');
-router.get('/', stateController.getStates);
-router.get('/:id', stateController.getState);
-router.delete('/:id', stateController.deleteState);
-router.post('/', stateController.createState);
+
+router
+  .route('/')
+  .get(stateController.getStates)
+  .post(stateController.createState);
+
+router
+  .route('/:id')
+  .get(stateController.getState)
+  .delete(stateController.deleteState);
+
+router.get('/:stateId/cities', stateController.getCitiesByState);
 module.exports = router;

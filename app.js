@@ -33,8 +33,8 @@ app.use(morgan('dev')); // Log HTTP requests
 
 // API Routes
 app.use('/api/v1', userRouter);
-app.use('/api/v1/states', stateRouter);
-app.use('/api/v1/cities', cityRouter);
+app.use('/api/v1/state', stateRouter);
+app.use('/api/v1/city', cityRouter);
 
 // Initialize Swagger
 swaggerDocs(app);

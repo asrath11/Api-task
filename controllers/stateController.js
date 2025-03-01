@@ -1,4 +1,5 @@
 const State = require('../models/stateModel');
+const City = require('../models/cityModel');
 
 // Get all states
 exports.getStates = async (_req, res) => {
@@ -52,6 +53,33 @@ exports.getState = async (req, res) => {
     });
   } catch (error) {
     return res.status(400).json({
+      status: 'Failed',
+      message: error.message,
+    });
+  }
+};
+exports.getCitiesByState = async (req, res) => {
+  try {
+    const { stateId } = req.params;
+    if (!stateId) {
+      return res.status(400).json({
+        message: 'Please provide StateId',
+      });
+    }
+    const city = await City.find({ stateId });
+    if (!city) {
+      return res.status(404).json({
+        status: 'Failed',
+        message: 'City not found',
+      });
+    }
+    return res.status(200).json({
+      status: 'Success',
+      result: city.length,
+      city,
+    });
+  } catch (error) {
+    return res.status(500).json({
       status: 'Failed',
       message: error.message,
     });

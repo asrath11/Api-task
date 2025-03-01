@@ -47,6 +47,25 @@
             "description": "The user's password (hashed)"
           }
         }
+      },
+      "State": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "City": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "stateId": {
+            "type": "string"
+          }
+        }
       }
     },
     "responses": {
@@ -324,6 +343,261 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/state": {
+      "get": {
+        "description": "Get All states",
+        "summary": "Get All states",
+        "tags": ["state"],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved all states",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/State"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Create State Data",
+        "summary": "Create State Data",
+        "tags": ["state"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully created State",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/State"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/state/{id}": {
+      "get": {
+        "description": "Get State by Id",
+        "summary": "Get State by Id",
+        "tags": ["state"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully fetched the State",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/State"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete State by Id",
+        "summary": "Delete State by Id",
+        "tags": ["state"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "State successfully deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "State deleted successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "State not found"
+          }
+        }
+      }
+    },
+    "/api/v1/city": {
+      "get": {
+        "description": "get All Cities",
+        "summary": "Get All Cities",
+        "tags": ["city"],
+        "responses": {
+          "200": {
+            "description": "Successfully fetched Cities",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/City"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Create City Data",
+        "summary": "Create City Data",
+        "tags": ["city"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "stateId": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully created City",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/City"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/city/{id}": {
+      "get": {
+        "description": "Get City by Id",
+        "summary": "Get City By Id",
+        "tags": ["city"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete City by Id",
+        "summary": "Delete City by Id",
+        "tags": ["city"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "City successfully deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "City deleted successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "City not found"
+          }
+        }
+      }
+    },
+    "/api/v1/state/{id}/cities": {
+      "get": {
+        "description": "Get All cities in state",
+        "tags": ["state"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successfully fetched all cities in the state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/City"
                 }
               }
             }
