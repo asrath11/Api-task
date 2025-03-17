@@ -32,14 +32,17 @@ const protect = async (req, res, next) => {
   }
 };
 
-const restrictTo = (req, res, next) => {
-  if (req.user && req.user.user_type === 2) {
-    return next();
-  }
-  return res.status(403).json({
-    status: 'Failed',
-    message: 'You have no access to this resource',
-  });
+const restrictTo = (...users) => {
+  return function (_req, res, next) {
+    if (users.includes('Admin')) {
+      next();
+    } else {
+      return res.status(401).json({
+        status: 'Failed',
+        message: 'You have no permission to access this resource',
+      });
+    }
+  };
 };
 
 module.exports = { protect, restrictTo };
