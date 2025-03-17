@@ -1,6 +1,7 @@
 // User Controller
 const User = require('./../models/userModel');
-exports.getUsers = async (_req, res) => {
+const asyncHandler = require('../utilities/asyncHandler');
+exports.getUsers = asyncHandler(async (_req, res) => {
   const users = await User.find();
   if (users.length === 0) {
     return res
@@ -12,8 +13,8 @@ exports.getUsers = async (_req, res) => {
     status: 'Success',
     users,
   });
-};
-exports.getUser = async (req, res) => {
+});
+exports.getUser = asyncHandler(async (req, res) => {
   let { id } = req.params;
   console.log(id);
   if (!id) {
@@ -30,4 +31,4 @@ exports.getUser = async (req, res) => {
     });
   }
   return res.status(200).json({ status: 'Success', user });
-};
+});
