@@ -1,92 +1,58 @@
 const City = require('../models/cityModel');
+const asyncHandler = require('../utilities/asyncHandler');
 
-exports.getCities = async (req, res) => {
-  try {
-    const cities = await City.find();
-    if (cities.length === 0) {
-      return res.status(200).json({
-        message: 'There no city at the moment',
-      });
-    }
-    return res.status(200).json({
-      status: 'Success',
-      results: cities.length,
-      cities,
-    });
-  } catch (error) {
+exports.getCities = asyncHandler(async (req, res) => {
+  const cities = await City.find();
+  return res.status(200).json({
+    status: 'Success',
+    results: cities.length,
+    data: cities,
+  });
+});
+
+exports.getCity = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  if (!id) {
+    const err = new Error('Missing city ID');
+    err.statusCode = 400;
+    throw err;
+  }
+
+  const city = await City.findById(id);
+  if (!city) {
+    const err = new Error('City not found');
+    err.statusCode = 404;
+    throw err;
+  }
+
+  return res.status(200).json({ status: 'Success', data: city });
+});
+
+exports.createCity = asyncHandler(async (req, res) => {
+  const { name, stateId } = req.body;
+  if (!name) {
     return res.status(400).json({
-      status: 'Failed',
-      message: error.message,
+      message: 'Please provide Name',
     });
   }
-};
+  const city = await City.create({ name, stateId });
+  return res.status(202).json({
+    status: 'Success',
+    city,
+  });
+});
 
-exports.getCity = async (req, res) => {
-  try {
-    const { id } = req.params;
-    if (!id) {
-      return res.status(400).json({
-        message: 'Please provide Id in the path',
-      });
-    }
-    const city = await City.findById(id);
-    if (!city) {
-      return res.status(404).json({
-        status: 'Failed',
-        message: 'There is no city with that id',
-      });
-    }
+exports.deleteCity = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  if (!id) {
     return res.status(200).json({
-      status: 'Success',
-      city,
-    });
-  } catch (error) {
-    return res.status(500).json({
       status: 'Failed',
-      message: error.message,
+      message: 'Please Provide id',
     });
   }
-};
-
-exports.createCity = async (req, res) => {
-  try {
-    const { name, stateId } = req.body;
-    if (!name) {
-      return res.status(400).json({
-        message: 'Please provide Name',
-      });
-    }
-    const city = await City.create({ name, stateId });
-    return res.status(202).json({
-      status: 'Success',
-      city,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      status: 'Failed',
-      message: error.message,
-    });
-  }
-};
-
-exports.deleteCity = async (req, res) => {
-  try {
-    const { id } = req.params;
-    if (!id) {
-      return res.status(200).json({
-        status: 'Failed',
-        message: 'Please Provide id',
-      });
-    }
-    const city = await City.findByIdAndDelete(id);
-    return res.status(200).json({
-      status: 'Success',
-      message: 'successfully deleted',
-    });
-  } catch (error) {
-    return res.status(500).json({
-      status: 'Failed',
-      message: error.message,
-    });
-  }
-};
+  const city = await City.findByIdAndDelete(id);
+  return res.status(200).json({
+    status: 'Success',
+    message: 'successfully deleted',
+  });
+});
