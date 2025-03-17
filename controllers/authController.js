@@ -4,87 +4,67 @@ const Otp = require('./../models/otpModel');
 const { createToken } = require('../utilities/createJwtToken');
 const { generateOtp } = require('../utilities/otpUtilities');
 const sendEmail = require('../utilities/sendEmail');
+const asyncHandler = require('../utilities/asyncHandler');
 
-exports.signUp = async function (req, res) {
-  try {
-    let { email, password } = req.body;
-    let user_type = req.body.user_type || 1;
-    console.log(user_type);
+exports.signUp = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  const user_type = req.body.user_type || 1;
 
-    if (!email || !password) {
-      return res.status(400).json({
-        status: 'Failed',
-        message: 'Please provide email and password',
-      });
-    }
-
-    // Check if the email already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({
-        status: 'Failed',
-        message: 'Email already in use',
-      });
-    }
-
-    const user = await User.create({ email, password, user_type });
-
-    // Handle token creation securely and include refreshToken
-    const { accessToken, refreshToken } = await createToken(user, res); // Ensure res is passed here
-    return res.status(201).json({
-      status: 'Success',
-      message: 'User successfully created',
-      accessToken,
-      refreshToken,
-    });
-  } catch (error) {
-    return res.status(400).json({
-      status: 'Failed',
-      message: error.message,
-    });
-  }
-};
-
-exports.signIn = async function (req, res) {
-  let { email } = req.body;
-
-  if (!email) {
-    return res
-      .status(400)
-      .json({ status: 'Failed', message: 'Please provide email' });
+  if (!email || !password) {
+    const err = new Error('Please provide email and password');
+    err.statusCode = 400;
+    throw err;
   }
 
-  let user = await User.findOne({ email }).select('-password');
-  if (!user) {
-    return res.status(400).json({ status: 'Failed', message: 'User not found' });
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    const err = new Error('Email already in use');
+    err.statusCode = 400;
+    throw err;
   }
 
-  // Handle token creation securely and include refreshToken
+  const user = await User.create({ email, password, user_type });
   const { accessToken, refreshToken } = await createToken(user, res);
 
-  // Delete any existing OTP for this user before creating a new one
-  await Otp.deleteMany({ userId: user._id, expiredAt: { $gt: Date.now() } });
+  res.status(201).json({
+    status: 'Success',
+    message: 'User created',
+    accessToken,
+    refreshToken,
+  });
+});
 
-  let otpToken = generateOtp();
-  const otpExpiration = Date.now() + 300000; // OTP expires in 5 minutes
+exports.signIn = asyncHandler(async (req, res) => {
+  const { email } = req.body;
 
+  if (!email) {
+    const err = new Error('Email required');
+    err.statusCode = 400;
+    throw err;
+  }
+
+  const user = await User.findOne({ email }).select('-password');
+  if (!user) {
+    const err = new Error('User not found');
+    err.statusCode = 404;
+    throw err;
+  }
+
+  const { accessToken, refreshToken } = await createToken(user, res);
+  await Otp.deleteMany({ userId: user._id });
+
+  const otpToken = generateOtp();
   await Otp.create({
     userId: user._id,
     otp: otpToken,
-    expiredAt: otpExpiration,
+    expiredAt: Date.now() + 300000,
   });
 
-  // Send OTP via email
   await sendEmail.sendOtpToEmail(email, otpToken);
+  res.json({ status: 'Success', message: 'OTP sent', accessToken });
+});
 
-  return res.status(200).json({
-    status: 'Success',
-    message: 'OTP sent to email',
-    accessToken,
-  });
-};
-
-exports.refreshToken = async function (req, res) {
+exports.refreshToken = asyncHandler(async function (req, res) {
   const refreshToken = req.cookies['X-RefreshToken']; // Accessing the cookie
   if (!refreshToken) {
     return res.status(400).json({
@@ -129,9 +109,9 @@ exports.refreshToken = async function (req, res) {
       message: 'Failed to refresh access token',
     });
   }
-};
+});
 
-exports.logout = async function (req, res) {
+exports.logout = asyncHandler(async function (req, res) {
   const { refreshToken } = req.cookies;
 
   // Invalidate the refresh token in the database
@@ -148,4 +128,4 @@ exports.logout = async function (req, res) {
   res.status(204).json({
     message: 'Successfully logged out',
   });
-};
+});
