@@ -35,8 +35,6 @@ const protect = async (req, res, next) => {
 const restrictTo = (...users) => {
   return function (req, res, next) {
     const { user_type } = req.user;
-    console.log(users);
-    console.log(users.includes(user_type));
     if (users.includes(user_type)) {
       next();
     } else {

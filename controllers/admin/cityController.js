@@ -1,5 +1,5 @@
-const City = require('../models/cityModel');
-const asyncHandler = require('../utilities/asyncHandler');
+const City = require('../../models/cityModel');
+const asyncHandler = require('../../utilities/asyncHandler');
 
 exports.getCities = asyncHandler(async (req, res) => {
   const cities = await City.find();

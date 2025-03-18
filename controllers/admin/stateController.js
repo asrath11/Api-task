@@ -1,6 +1,6 @@
-const State = require('../models/stateModel');
-const City = require('../models/cityModel');
-const asyncHandler = require('../utilities/asyncHandler');
+const State = require('../../models/stateModel');
+const City = require('../../models/cityModel');
+const asyncHandler = require('../../utilities/asyncHandler');
 
 // Get all states
 exports.getStates = asyncHandler(async (_req, res) => {

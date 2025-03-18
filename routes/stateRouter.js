@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const stateController = require('../controllers/stateController');
-const { restrictTo } = require('../middlewares/authmiddlewares');
+const stateController = require('../controllers/admin/stateController');
+const { protect, restrictTo } = require('../middlewares/authmiddlewares');
 
+router.use(protect);
 router.use(restrictTo(2));
 router
   .route('/')
