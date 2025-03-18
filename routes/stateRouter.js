@@ -3,7 +3,7 @@ const router = express.Router();
 const stateController = require('../controllers/stateController');
 const { restrictTo } = require('../middlewares/authmiddlewares');
 
-router.use(restrictTo('Admin'));
+router.use(restrictTo(2));
 router
   .route('/')
   .get(stateController.getStates)

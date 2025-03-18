@@ -12,6 +12,6 @@ router.post('/logout', authController.logout);
 router.post('/refresh-token', authController.refreshToken);
 
 router.get('/user/:id', userController.getUser);
-router.get('/users', protect, restrictTo('Admin'), userController.getUsers);
+router.get('/users', protect, restrictTo(2), userController.getUsers);
 
 module.exports = router;
