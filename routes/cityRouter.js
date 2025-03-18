@@ -1,6 +1,10 @@
 const express = require('express');
-const cityController = require('../controllers/cityController');
 const router = express.Router();
+
+const cityController = require('../controllers/cityController');
+const { restrictTo } = require('../middlewares/authmiddlewares');
+
+router.use(restrictTo('Admin'));
 
 router.route('/').get(cityController.getCities).post(cityController.createCity);
 router
