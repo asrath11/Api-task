@@ -6,15 +6,18 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan'); // For logging HTTP requests
 const helmet = require('helmet');
 const cors = require('cors');
+
 const connectDb = require('./connectDb'); // Importing connectDb function
 
 // Load environment variables
+
 env.config({ path: './config.env' });
 
 const swaggerDocs = require('./swagger/swaggerDocs'); // Ensure correct import
 const userRouter = require('./routes/userRouter');
 const stateRouter = require('./routes/stateRouter');
 const cityRouter = require('./routes/cityRouter');
+const packageRouter = require('./routes/packageRouter');
 
 // Connect to Database
 connectDb();
@@ -25,6 +28,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 // Static files setup
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(helmet());
@@ -35,6 +39,7 @@ app.use(morgan('dev')); // Log HTTP requests
 app.use('/api/v1', userRouter);
 app.use('/api/v1/state', stateRouter);
 app.use('/api/v1/city', cityRouter);
+app.use('/api/v1/package', packageRouter);
 
 // Initialize Swagger
 swaggerDocs(app);
