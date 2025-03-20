@@ -104,3 +104,60 @@ exports.deletePackage = asyncHandler(async (req, res) => {
     package,
   });
 });
+
+exports.updatePackage = asyncHandler(async (req, res) => {
+  let { id } = req.params;
+  console.log(id);
+  let {
+    name,
+    priceDescription,
+    capacityDescription,
+    city,
+    area,
+    price,
+    extraPersonCost,
+    imageCover,
+    images,
+    videoLink,
+  } = req.body;
+  console.log(req.body);
+  const image = req.files.imageCover[0];
+  const multipleImages = req.files.images;
+  if (req.files) {
+    if (image) {
+      imageCover = image.filename;
+    }
+    if (multipleImages) {
+      images = multipleImages.map((el) => el.filename);
+    }
+  }
+  const package = await Package.findByIdAndUpdate(
+    id,
+    {
+      name,
+      priceDescription,
+      capacityDescription,
+      city,
+      area,
+      price,
+      extraPersonCost,
+      imageCover,
+      images,
+      videoLink,
+    },
+    {
+      returnOriginal: false,
+    }
+  );
+  if (!package) {
+    return res.status(400).json({
+      status: 'Failed',
+      message: 'please enter valid request',
+    });
+  }
+  return res.status(201).json({
+    status: 'Success',
+    message: 'Successfully created Package',
+    package,
+  });
+});
