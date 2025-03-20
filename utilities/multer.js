@@ -1,15 +1,15 @@
 const multer = require('multer');
 
-const multerConfig = (dest, name) => {
+const multerConfig = (fieldName, singleFile = true) => {
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-      cb(null, dest);
+      cb(null, `public/img/${fieldName}`);
     },
     filename: (req, file, cb) => {
       const ext = file.mimetype.split('/')[1];
       const user = req.user._id;
       const date = Date.now();
-      cb(null, `${name}-${user}-${date}.${ext}`);
+      cb(null, `${fieldName}-${user}-${date}.${ext}`);
     },
   });
 
@@ -29,7 +29,9 @@ const multerConfig = (dest, name) => {
     //   fieldSize: 50 * 1024 * 1024,
     // },
   });
-
+  if (singleFile) {
+    return upload.single('image');
+  }
   return upload.fields([
     {
       name: 'imageCover',
