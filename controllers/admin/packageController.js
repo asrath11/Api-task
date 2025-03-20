@@ -104,11 +104,11 @@ exports.deletePackage = asyncHandler(async (req, res) => {
     package,
   });
 });
-
 exports.updatePackage = asyncHandler(async (req, res) => {
-  let { id } = req.params;
-  console.log(id);
-  let {
+  const { id } = req.params;
+
+  // Extract fields from the request body
+  const {
     name,
     priceDescription,
     capacityDescription,
@@ -116,48 +116,49 @@ exports.updatePackage = asyncHandler(async (req, res) => {
     area,
     price,
     extraPersonCost,
-    imageCover,
-    images,
     videoLink,
   } = req.body;
-  console.log(req.body);
-  const image = req.files.imageCover[0];
-  const multipleImages = req.files.images;
+
+  // Initialize update object with non-file fields
+  const updateData = {
+    name,
+    priceDescription,
+    capacityDescription,
+    city,
+    area,
+    price,
+    extraPersonCost,
+    videoLink,
+  };
+
+  // Handle file uploads if they exist
   if (req.files) {
-    if (image) {
-      imageCover = image.filename;
+    if (req.files.imageCover && req.files.imageCover[0]) {
+      updateData.imageCover = req.files.imageCover[0].filename;
     }
-    if (multipleImages) {
-      images = multipleImages.map((el) => el.filename);
+    if (req.files.images && req.files.images.length > 0) {
+      updateData.images = req.files.images.map((el) => el.filename);
     }
   }
-  const package = await Package.findByIdAndUpdate(
-    id,
-    {
-      name,
-      priceDescription,
-      capacityDescription,
-      city,
-      area,
-      price,
-      extraPersonCost,
-      imageCover,
-      images,
-      videoLink,
-    },
-    {
-      returnOriginal: false,
-    }
-  );
-  if (!package) {
-    return res.status(400).json({
+
+  // Update the package in the database
+  const updatedPackage = await Package.findByIdAndUpdate(id, updateData, {
+    new: true, // Return the updated document
+    runValidators: true, // Ensure validators are run on update
+  });
+
+  // Handle case where the package is not found
+  if (!updatedPackage) {
+    return res.status(404).json({
       status: 'Failed',
-      message: 'please enter valid request',
+      message: 'No package found with that ID',
     });
   }
-  return res.status(201).json({
+
+  // Return success response
+  return res.status(200).json({
     status: 'Success',
-    message: 'Successfully created Package',
-    package,
+    message: 'Package updated successfully',
+    package: updatedPackage,
   });
 });
