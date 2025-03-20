@@ -17,15 +17,29 @@ const multerConfig = (dest, name) => {
     if (file.mimetype.startsWith('image')) {
       cb(null, true);
     } else {
-      cb('image only allowed', false);
+      cb(new Error('Only image files are allowed!'), false);
     }
   };
 
   const upload = multer({
     storage: storage,
     fileFilter: filter,
+    // limits: {
+    //   fileSize: 10 * 1024 * 1024,
+    //   fieldSize: 50 * 1024 * 1024,
+    // },
   });
-  return upload.single('image');
+
+  return upload.fields([
+    {
+      name: 'imageCover',
+      maxCount: 1,
+    },
+    {
+      name: 'images',
+      maxCount: 2,
+    },
+  ]);
 };
 
 module.exports = multerConfig;
