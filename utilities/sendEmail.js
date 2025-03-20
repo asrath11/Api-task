@@ -11,8 +11,8 @@ async function sendOtpToEmail(email, otp) {
     { otp }
   );
   const transporter = nodemailer.createTransport({
-    host: 'sandbox.smtp.mailtrap.io',
-    port: 2525,
+    host: process.env.MAIL_TRAP_HOST,
+    port: process.env.MAIL_TRAP_PORT,
     auth: {
       user: process.env.MAIL_TRAP_USER,
       pass: process.env.MAIL_TRAP_PASSWORD,
