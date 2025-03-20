@@ -6,11 +6,9 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan'); // For logging HTTP requests
 const helmet = require('helmet');
 const cors = require('cors');
-
 const connectDb = require('./connectDb'); // Importing connectDb function
 
 // Load environment variables
-
 env.config({ path: './config.env' });
 
 const swaggerDocs = require('./swagger/swaggerDocs'); // Ensure correct import
@@ -28,7 +26,6 @@ app.set('views', path.join(__dirname, 'views'));
 
 // Static files setup
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(helmet());
