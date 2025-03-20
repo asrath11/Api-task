@@ -40,9 +40,11 @@ const packageSchema = new Schema({
     type: Number,
     default: 0,
   },
-  image: {
+  imageCover: {
     type: String,
   },
+  images: [String],
+  videoLink: String,
 });
 
 const package = mongoose.model('Package', packageSchema);
