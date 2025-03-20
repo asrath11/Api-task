@@ -16,6 +16,7 @@ const userRouter = require('./routes/userRouter');
 const stateRouter = require('./routes/stateRouter');
 const cityRouter = require('./routes/cityRouter');
 const packageRouter = require('./routes/packageRouter');
+const addOnsRouter = require('./routes/addOnsRouter');
 
 // Connect to Database
 connectDb();
@@ -38,6 +39,7 @@ app.use('/api/v1', userRouter);
 app.use('/api/v1/state', stateRouter);
 app.use('/api/v1/city', cityRouter);
 app.use('/api/v1/package', packageRouter);
+app.use('/api/v1/addOns', addOnsRouter);
 
 // Initialize Swagger
 swaggerDocs(app);
