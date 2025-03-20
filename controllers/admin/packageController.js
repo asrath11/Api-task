@@ -9,10 +9,19 @@ exports.createPackage = asyncHandler(async (req, res) => {
     area,
     price,
     extraPersonCost,
-    image,
+    imageCover,
+    images,
+    videoLink,
   } = req.body;
-  if (req.file) {
-    image = req.file.filename;
+  const image = req.files.imageCover[0];
+  const multipleImages = req.files.images;
+  if (req.files) {
+    if (image) {
+      imageCover = image.filename;
+    }
+    if (multipleImages) {
+      images = multipleImages.map((el) => el.filename);
+    }
   }
   const package = await Package.create({
     name,
@@ -22,7 +31,9 @@ exports.createPackage = asyncHandler(async (req, res) => {
     area,
     price,
     extraPersonCost,
-    image,
+    imageCover,
+    images,
+    videoLink,
   });
   if (!package) {
     return res.status(400).json({
