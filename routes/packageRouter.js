@@ -10,7 +10,7 @@ router.use(restrictTo(2)); // ensures that only user_type = 2 can access resourc
 router.route('/').get(packageController.getPackages);
 
 router.post(
-  '/test-upload',
+  '/',
   upload('public/img/packages', 'packages'),
   packageController.createPackage
 );
@@ -18,5 +18,9 @@ router.post(
 router
   .route('/:id')
   .get(packageController.getPackage)
-  .delete(packageController.deletePackage);
+  .delete(packageController.deletePackage)
+  .patch(
+    upload('public/img/packages', 'packages'),
+    packageController.updatePackage
+  );
 module.exports = router;
